@@ -66,12 +66,22 @@ We use the [[https://github.com/emacscollective/no-littering/blob/master/no-litt
 
 #+end_src
 
+* Read path variable
+
+#+begin_src emacs-lisp
+
+  (use-package exec-path-from-shell
+    :config
+    (when (memq window-system '(mac ns x))
+      (exec-path-from-shell-initialize)))
+
+#+end_src
+
 * Basic UI configuration
 
 This section configures basic UI settings that remove unneeded elements to make Emacs look a lot more minimal and modern.  If you're just getting started in Emacs, the menu bar might be helpful so you can remove the =(menu-bar-mode -1)= line if you'd like to still see that.
 
 #+begin_src emacs-lisp
-
   (setq inhibit-startup-message t)
 
   (scroll-bar-mode -1)
