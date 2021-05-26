@@ -258,6 +258,12 @@
   :config
   (setq typescript-indent-level 2))
 
+(use-package go-mode
+  :mode "\\.go\\'"
+  :hook ((go-mode . lsp-deferred)
+         (before-save . lsp-format-buffer)
+         (before-save . lsp-organize-imports)))
+
 (use-package company
   :after lsp-mode
   :hook (lsp-mode . company-mode)
