@@ -30,6 +30,22 @@
 (require 'use-package)
 (setq use-package-always-ensure t)
 
+;; NOTE: If you want to move everything out of the ~/.emacs.d folder
+;; reliably, set `user-emacs-directory` before loading no-littering!
+(setq user-emacs-directory "~/.cache/emacs")
+
+(use-package no-littering)
+
+;; no-littering doesn't set this by default so we must place
+;; auto save files in the same path as it uses for sessions
+(setq auto-save-file-name-transforms
+      `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
+
+(use-package exec-path-from-shell
+  :config
+  (when (memq window-system '(mac ns x))
+    (exec-path-from-shell-initialize)))
+
 (setq inhibit-startup-message t)
 
 (scroll-bar-mode -1)
@@ -46,13 +62,17 @@
                 term-mode-hook
                 shell-mode-hook
                 eshell-mode-hook))
-  (add-hook mode (lambda () (display-line-numbers-mode 0))))
+    (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
 (setq visible-bell t)
+(setq ring-bell-function 'ignore)
+(fset 'yes-or-no-p 'y-or-n-p)
+(show-paren-mode 1)
+(global-auto-revert-mode t)
 
-(set-face-attribute 'default nil :font "FiraCode NF" :height 120)
-(set-face-attribute 'fixed-pitch nil :font "FiraCode NF" :height 120)
-(set-face-attribute 'variable-pitch nil :font "FiraCode NF" :height 120 :weight 'regular)
+(set-face-attribute 'default nil :font "FiraCode Nerd Font Mono" :height 120)
+(set-face-attribute 'fixed-pitch nil :font "FiraCode Nerd Font Mono" :height 120)
+(set-face-attribute 'variable-pitch nil :font "FiraCode Nerd Font Mono" :height 120 :weight 'regular)
 
 ;; Make ESC quit prompts
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
@@ -175,7 +195,7 @@
                   (org-level-6 . 1.1)
                   (org-level-7 . 1.1)
                   (org-level-8 . 1.1)))
-    (set-face-attribute (car face) nil :font "FiraCode NF" :weight 'regular :height (cdr face)))
+    (set-face-attribute (car face) nil :font "FiraCode Nerd Font" :weight 'regular :height (cdr face)))
 
   ;; Ensure that anything that should be fixed-pitch in Org files appears that way
   (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
@@ -215,6 +235,38 @@
 (org-babel-do-load-languages
   'org-babel-load-languages
   '((emacs-lisp . t)))
+
+(defun efs/lsp-mode-setup ()
+  (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
+  (lsp-headerline-breadcrumb-mode))
+
+(use-package lsp-mode
+  :commands (lsp lsp-deferred)
+  :hook (lsp-mode . efs/lsp-mode-setup)
+  :init
+  (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
+  :config
+  (lsp-enable-which-key-integration t)
+  (company-tng-configure-default))
+
+(use-package nvm
+  :defer t)
+
+(use-package typescript-mode
+  :mode "\\.ts\\'"
+  :hook (typescript-mode . lsp-deferred)
+  :config
+  (setq typescript-indent-level 2))
+
+(use-package company
+  :after lsp-mode
+  :hook (lsp-mode . company-mode)
+  :custom
+  (company-minimum-prefix-length 1)
+  (company-idle-delay 0.0))
+
+(use-package company-box
+  :hook (company-mode . company-box-mode))
 
 (use-package projectile
   :diminish projectile-mode
@@ -271,6 +323,13 @@
 
   (eshell-git-prompt-use-theme 'robbyrussell))
 
+(use-package vterm
+  :commands vterm
+  :config
+  (setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *")  ;; Set this to match your custom shell prompt
+  ;;(setq vterm-shell "zsh")                       ;; Set this to customize the shell to launch
+  (setq vterm-max-scrollback 10000))
+
 (use-package dired
   :ensure nil
   :commands (dired dired-jump)
@@ -303,16 +362,3 @@
 
 ;; Make gc pauses faster by decreasing the threshold.
 (setq gc-cons-threshold (* 2 1000 1000))
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(evil-nerd-commenter which-key visual-fill-column use-package rainbow-delimiters org-bullets magit ivy-rich ivy-prescient hydra helpful general evil-collection eshell-git-prompt doom-themes doom-modeline dired-single dired-open dired-hide-dotfiles counsel-projectile all-the-icons-dired)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
