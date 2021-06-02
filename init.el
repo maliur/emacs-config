@@ -264,6 +264,16 @@
          (before-save . lsp-format-buffer)
          (before-save . lsp-organize-imports)))
 
+(use-package web-mode
+  :mode "\\.vue\\'"
+  :hook ((web-mode . lsp-deferred))
+  :config
+  (setq web-mode-code-indent-offset 2)
+  (setq web-mode-css-indent-offset 2)
+  (setq web-mode-markup-indent-offset 2)
+  (setq web-mode-script-padding 0)
+  (setq web-mode-style-padding 0))
+
 (use-package company
   :after lsp-mode
   :hook (lsp-mode . company-mode)
