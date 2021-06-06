@@ -62,6 +62,7 @@
                 term-mode-hook
                 shell-mode-hook
                 eshell-mode-hook
+                treemacs-mode-hook
                 vterm-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
@@ -250,6 +251,17 @@
   (lsp-enable-which-key-integration t)
   (company-tng-configure-default))
 
+(use-package lsp-ui
+  :hook (lsp-mode . lsp-ui-mode)
+  :custom
+  (lsp-ui-doc-position 'bottom))
+
+(use-package lsp-treemacs
+  :after lsp)
+
+(use-package lsp-ivy
+  :after lsp)
+
 (use-package nvm
   :defer t)
 
@@ -379,3 +391,16 @@
 
 ;; Make gc pauses faster by decreasing the threshold.
 (setq gc-cons-threshold (* 2 1000 1000))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(lsp-ivy lsp-treemacs lsp-ui which-key web-mode vterm visual-fill-column use-package typescript-mode rainbow-delimiters org-bullets nvm no-littering magit lsp-mode ivy-rich ivy-prescient hydra helpful go-mode general exec-path-from-shell evil-nerd-commenter evil-collection eshell-git-prompt doom-themes doom-modeline dired-single dired-open dired-hide-dotfiles counsel-projectile company-box all-the-icons-dired)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
