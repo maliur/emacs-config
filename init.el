@@ -61,8 +61,9 @@
 (dolist (mode '(org-mode-hook
                 term-mode-hook
                 shell-mode-hook
-                eshell-mode-hook))
-    (add-hook mode (lambda () (display-line-numbers-mode 0))))
+                eshell-mode-hook
+                vterm-mode-hook))
+  (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
 (setq visible-bell t)
 (setq ring-bell-function 'ignore)
