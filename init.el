@@ -88,13 +88,50 @@
 ;; Make ESC quit prompts
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
-
 (use-package general
+  :after evil
   :config
   (general-create-definer efs/leader-keys
     :keymaps '(normal insert visual emacs)
     :prefix "SPC"
-    :global-prefix "C-SPC"))
+    :global-prefix "C-SPC")
+
+  (efs/leader-keys
+    ;; treemacs
+    "t"  '(:ignore t :which-key "treemacs")
+    "tt" '(treemacs :which-key "treemacs toggle")
+    "tt" '(treemacs-find-file :which-key "treemacs find file")
+
+    ;; projectile
+    "f"  '(:ignore t :which-key "find")
+    "ff" '(projectile-find-file :which-key "projectile find file")
+    "fs" '(projectile-ripgrep :which-key "projectile search project")
+
+    ;; buffers
+    "bs" '(switch-to-buffer :which-key "change buffer")
+    "bp" '(previous-buffer :which-key "next buffer")
+    "bn" '(next-buffer :which-key "previous buffer")
+    "bd" '(evil-delete-buffer :which-key "close buffer")
+
+    ;; git
+    "gs" '(magit :which-key "git status")
+
+    ;; diagnostics
+    "d"  '(:ignore t :which-key "diagnostics")
+    "dn" '(flymake-goto-next-error :which-key "diagnostics next error")
+    "dp" '(flymake-goto-prev-error :which-key "diagnostics previous error")
+    "ds" '(flymake-show-diagnostics-buffer :which-key "diagnostics show list")
+
+    ;; lsp
+    "g"  '(:ignore t :which-key "lsp")
+    "gd" '(lsp-find-definition :which-key "lsp find definition")
+    "gD" '(lsp-find-declaration :which-key "lsp find declaration")
+    "gt" '(lsp-find-type-definition :which-key "lsp find type defintion")
+    "gi" '(lsp-find-implementation :which-key "lsp find implementation")
+    "gr" '(lsp-find-references :which-key "lsp find references")
+    "gR" '(lsp-rename :which-key "lsp rename")
+    "ga" '(lsp-execute-code-action :which-key "lsp code action")
+))
 
 (use-package evil
   :init
@@ -277,10 +314,14 @@
 (use-package lsp-ui
   :hook (lsp-mode . lsp-ui-mode)
   :custom
-  (lsp-ui-doc-position 'bottom))
+  (lsp-ui-doc-position 'top))
 
 (use-package lsp-treemacs
   :after lsp)
+
+(use-package treemacs-projectile
+  :ensure t
+  :after (treemacs projectile))
 
 (use-package lsp-ivy
   :after lsp)
